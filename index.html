@@ -22,14 +22,6 @@
             overflow-x: hidden;
         }
 
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 0px;
-        }
-
         .noise-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -39,28 +31,9 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* Glitch Styles (Static or Triggered via Hover/JS) */
         .glitch-text {
             position: relative;
             display: inline-block;
-        }
-
-        /* Animaciones de glitch mantenidas por si se desean usar en hover o eventos */
-        @keyframes glitch-anim {
-            0% { clip: rect(31px, 9999px, 94px, 0); }
-            40% { clip: rect(16px, 9999px, 78px, 0); }
-            100% { clip: rect(29px, 9999px, 85px, 0); }
-        }
-
-        @keyframes glitch-anim2 {
-            0% { clip: rect(65px, 9999px, 100px, 0); }
-            50% { clip: rect(45px, 9999px, 60px, 0); }
-            100% { clip: rect(55px, 9999px, 75px, 0); }
-        }
-
-        @keyframes glitch-skew {
-            0% { transform: skew(1deg); }
-            100% { transform: skew(-1deg); }
         }
 
         .btn-sign {
@@ -73,6 +46,8 @@
             display: inline-block;
             text-decoration: none;
             color: white;
+            background: transparent;
+            cursor: pointer;
         }
 
         .btn-sign:hover {
@@ -98,6 +73,69 @@
         .dim-text {
             color: rgba(255,255,255,0.4);
         }
+
+        .logo-slot {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+        }
+
+        .logo-slot img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+        /* Modal Styles */
+        #formModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #050505;
+        }
+
+        input, select, textarea {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 1.5rem;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #fff;
+        }
+
+        label {
+            display: block;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 0.6rem;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body class="selection:bg-white selection:text-black">
@@ -105,27 +143,32 @@
     
     <!-- Navegación -->
     <nav class="fixed top-0 w-full z-40 p-8 flex justify-between items-center mix-blend-difference">
-        <div class="text-xs tracking-[0.5em] opacity-50">2026 MBW</div>
+        <!-- PON TU LOGO AQUÍ -->
+        <div class="logo-slot">
+            <img src="mbw logo 1.png" alt="Logo MBW" onerror="this.style.display='none';">
+            MUSIC BLOCKCHAIN WEEK
+        </div>
+
         <div class="hidden md:flex gap-10 text-[10px] tracking-[0.4em] uppercase">
             <a href="#kickoff" class="hover:opacity-50 transition-opacity">Kickoff</a>
             <a href="#experience" class="hover:opacity-50 transition-opacity">Sessions</a>
-            <a href="#vision" class="hover:opacity-50 transition-opacity">Vision</a>
+            <a href="#hero" class="hover:opacity-50 transition-opacity">Vision</a>
         </div>
-        <!-- Botón Mailto en Nav -->
-        <a href="mailto:connect@musicblockchainweek.com?subject=Sign%20Innovation" class="border border-white/30 px-4 py-2 text-[9px] uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all">Sign_Innovation</a>
+        
+        <button onclick="toggleModal()" class="border border-white/30 px-4 py-2 text-[9px] uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all">
+            Sign_Innovation
+        </button>
     </nav>
 
     <!-- Hero Section -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden">
-        <!-- La linea animada (scanline) ha sido eliminada de aquí -->
-        
         <div class="z-10 text-center max-w-5xl">
             <h2 class="text-[10px] tracking-[0.6em] uppercase mb-12 opacity-40">Music Blockchain Week 2026</h2>
             
             <h1 class="text-6xl md:text-9xl font-light tracking-tighter mb-10 leading-[0.85] uppercase flex flex-col">
-                <span class="glitch-text" data-text="AN ENDURING">AN ENDURING</span>
-                <span class="italic-title glitch-text" data-text="DIALOGUE">DIALOGUE</span>
-                <span class="dim-text glitch-text" data-text="MUSIC AND TECH">MUSIC AND TECH</span>
+                <span class="glitch-text">AN ENDURING</span>
+                <span class="italic-title glitch-text">DIALOGUE</span>
+                <span class="dim-text glitch-text">MUSIC AND TECH</span>
             </h1>
 
             <p class="text-xs md:text-sm max-w-xl mx-auto opacity-50 leading-loose font-light mt-6 tracking-wide">
@@ -179,7 +222,7 @@
                         Teaming up with <strong>PizzaDAO</strong> to share 40K pizzas and throw 400 parties globally. Stockholm is one of the main spots. History, community, and fun.
                     </p>
                 </div>
-                <a href="mailto:connect@musicblockchainweek.com?subject=Sign%20Innovation" class="btn-sign text-center">Join the list</a>
+                <button onclick="toggleModal()" class="btn-sign text-center">Join the list</button>
             </div>
         </div>
     </section>
@@ -190,9 +233,9 @@
             <h2 class="text-5xl md:text-8xl font-light tracking-tighter uppercase mb-20 leading-none">Ready to merge<br>industries?</h2>
             
             <div class="flex justify-center">
-                <a href="mailto:connect@musicblockchainweek.com?subject=Sign%20Innovation" class="btn-sign">
+                <button onclick="toggleModal()" class="btn-sign">
                     Sign_Innovation
-                </a>
+                </button>
             </div>
 
             <div class="mt-40 flex flex-col md:flex-row justify-between w-full text-[9px] uppercase tracking-[0.5em] opacity-30">
@@ -206,9 +249,102 @@
         </div>
     </footer>
 
+    <!-- FORMULARIO MODAL INTEGRADO -->
+    <div id="formModal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-[10px] tracking-[0.5em] uppercase opacity-50">Innovation_Delegate_Form</h3>
+                <button onclick="toggleModal()" class="text-2xl opacity-50 hover:opacity-100">&times;</button>
+            </div>
+            
+            <form id="delegateForm" onsubmit="handleForm(event)">
+                <label>Full Name</label>
+                <input type="text" id="name" placeholder="Name" required>
+
+                <label>Industry Segment</label>
+                <select id="industry" required>
+                    <option value="" disabled selected>Select Segment</option>
+                    <option value="Developer">Developer</option>
+                    <option value="Music">Music Industry</option>
+                    <option value="Startup">Startup / Founder</option>
+                </select>
+
+                <label>Join the guest list</label>
+                <input type="email" id="email" placeholder="email@address.com" required>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label>X (Twitter) Profile</label>
+                        <input type="text" id="x_profile" placeholder="@handle">
+                    </div>
+                    <div>
+                        <label>IG Profile</label>
+                        <input type="text" id="ig_profile" placeholder="@handle">
+                    </div>
+                </div>
+
+                <label>What do you want to change to better in this world?</label>
+                <textarea id="question" rows="3" placeholder="My mission is..."></textarea>
+
+                <button type="submit" class="w-full bg-white text-black py-4 text-[11px] tracking-[0.5em] uppercase font-bold hover:bg-zinc-200 transition-colors">
+                    Submit_Application
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // La lógica de detección de glitch via scanner ha sido eliminada para limpiar el fondo.
-        
+        // Función para abrir/cerrar modal
+        function toggleModal() {
+            const modal = document.getElementById('formModal');
+            const isHidden = modal.style.display === 'none' || modal.style.display === '';
+            modal.style.display = isHidden ? 'flex' : 'none';
+            document.body.style.overflow = isHidden ? 'hidden' : 'auto';
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('formModal');
+            if (event.target == modal) toggleModal();
+        }
+
+        // Manejo del formulario y envío de email
+        function handleForm(e) {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('name').value,
+                industry: document.getElementById('industry').value,
+                email: document.getElementById('email').value,
+                x: document.getElementById('x_profile').value || 'Not provided',
+                ig: document.getElementById('ig_profile').value || 'Not provided',
+                question: document.getElementById('question').value
+            };
+
+            const subject = `MBW 2026 Access Request: ${data.name}`;
+            const body = `
+NEW DELEGATE APPLICATION
+-------------------------
+Name: ${data.name}
+Industry Segment: ${data.industry}
+Email: ${data.email}
+X Profile: ${data.x}
+IG Profile: ${data.ig}
+
+Vision for Change:
+${data.question}
+            `.trim();
+
+            // Redirección al cliente de correo
+            window.location.href = `mailto:connect@musicblockchainweek.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            setTimeout(() => {
+                toggleModal();
+                alert("Redirigiendo a tu aplicación de correo para enviar la información...");
+            }, 500);
+        }
+
+        // Efecto de fondo radial
         document.addEventListener('mousemove', (e) => {
             const x = e.clientX / window.innerWidth;
             const y = e.clientY / window.innerHeight;
