@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Blockchain Week | The Strategic Bridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 0px;
+        }
+
+        .noise-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.08;
+            z-index: 50;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Glitch Styles (Static or Triggered via Hover/JS) */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Animaciones de glitch mantenidas por si se desean usar en hover o eventos */
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            40% { clip: rect(16px, 9999px, 78px, 0); }
+            100% { clip: rect(29px, 9999px, 85px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            50% { clip: rect(45px, 9999px, 60px, 0); }
+            100% { clip: rect(55px, 9999px, 75px, 0); }
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(1deg); }
+            100% { transform: skew(-1deg); }
+        }
+
+        .btn-sign {
+            border: 2px solid #fff;
+            padding: 1rem 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-sign:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+        }
+
+        .section-tag {
+            font-size: 11px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            opacity: 0.5;
+            margin-bottom: 2.5rem;
+            display: block;
+        }
+
+        .italic-title {
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .dim-text {
+            color: rgba(255,255,255,0.4);
+        }
+    </style>
+</head>
+<body class="selection:bg-white selection:text-black">
+    <div class="noise-bg"></div>
+    
+    <!-- Navegación -->
+    <nav class="fixed top-0 w-full z-40 p-8 flex justify-between items-center mix-blend-difference">
+        <div class="text-xs tracking-[0.5em] opacity-50">2026 MBW</div>
+        <div class="hidden md:flex gap-10 text-[10px] tracking-[0.4em] uppercase">
+            <a href="#kickoff" class="hover:opacity-50 transition-opacity">Kickoff</a>
+            <a href="#experience" class="hover:opacity-50 transition-opacity">Sessions</a>
+            <a href="#vision" class="hover:opacity-50 transition-opacity">Vision</a>
+        </div>
+        <!-- Botón Mailto en Nav -->
+        <a href="mailto:connect@musicblockchainweek.com?subject=Sign%20Innovation" class="border border-white/30 px-4 py-2 text-[9px] uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all">Sign_Innovation</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden">
+        <!-- La linea animada (scanline) ha sido eliminada de aquí -->
+        
+        <div class="z-10 text-center max-w-5xl">
+            <h2 class="text-[10px] tracking-[0.6em] uppercase mb-12 opacity-40">Music Blockchain Week 2026</h2>
+            
+            <h1 class="text-6xl md:text-9xl font-light tracking-tighter mb-10 leading-[0.85] uppercase flex flex-col">
+                <span class="glitch-text" data-text="AN ENDURING">AN ENDURING</span>
+                <span class="italic-title glitch-text" data-text="DIALOGUE">DIALOGUE</span>
+                <span class="dim-text glitch-text" data-text="MUSIC AND TECH">MUSIC AND TECH</span>
+            </h1>
+
+            <p class="text-xs md:text-sm max-w-xl mx-auto opacity-50 leading-loose font-light mt-6 tracking-wide">
+                Bridging the gap between the emotive power of music and the structural innovation of Blockchain & AI. 
+            </p>
+        </div>
+    </section>
+
+    <!-- Experience Grid -->
+    <section id="experience" class="py-40 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-white/10">
+                <div class="p-16 h-80 flex flex-col justify-between border-r border-white/10 hover:bg-white/5 transition-all">
+                    <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase">Session_01</span>
+                    <h4 class="text-2xl uppercase tracking-tighter">Live Showcases</h4>
+                </div>
+                <div class="p-16 h-80 flex flex-col justify-between border-r border-white/10 hover:bg-white/5 transition-all">
+                    <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase">Session_02</span>
+                    <h4 class="text-2xl uppercase tracking-tighter">hacker house&nbsp;</h4>
+                </div>
+                <div class="p-16 h-80 flex flex-col justify-between hover:bg-white/5 transition-all">
+                    <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase">Session_03</span>
+                    <h4 class="text-2xl uppercase tracking-tighter">Founder Sprints</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Kickoff Section -->
+    <section id="kickoff" class="py-40 px-6 border-y border-white/5">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-24">
+            <div>
+                <span class="section-tag">Next_Event</span>
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter uppercase mb-10 leading-none">Community Love<br>Kickoff</h2>
+                <div class="p-10 border-l border-white/20 bg-white/[0.02]">
+                    <p class="text-xl leading-relaxed mb-8 font-light">
+                        Music Blockchain Week is Stockholm's most exciting pre-party leading up to the <strong>2026 Nordic Blockchain Conference</strong>.
+                    </p>
+                    <p class="opacity-40 leading-relaxed text-sm font-light">
+                        Think live bands, local craft beers, whiskey sips, tasty food, and real conversations with founders and investors — all across the city's coolest venues.
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-col justify-center">
+                <p class="text-2xl opacity-70 leading-snug mb-12 italic">
+                    "Whether you're deep in blockchain or just love good music and great people, this is your week."
+                </p>
+                <div class="p-10 border border-white/10 mb-12">
+                    <h4 class="text-[10px] uppercase tracking-[0.5em] mb-6 opacity-30">May 22nd • Global Pizza Day</h4>
+                    <p class="text-sm opacity-50 leading-relaxed font-light">
+                        Teaming up with <strong>PizzaDAO</strong> to share 40K pizzas and throw 400 parties globally. Stockholm is one of the main spots. History, community, and fun.
+                    </p>
+                </div>
+                <a href="mailto:connect@musicblockchainweek.com?subject=Sign%20Innovation" class="btn-sign text-center">Join the list</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / CTA Final -->
+    <footer class="py-40 px-6 text-center relative overflow-hidden">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-5xl md:text-8xl font-light tracking-tighter uppercase mb-20 leading-none">Ready to merge<br>industries?</h2>
+            
+            <div class="flex justify-center">
+                <a href="mailto:connect@musicblockchainweek.com?subject=Sign%20Innovation" class="btn-sign">
+                    Sign_Innovation
+                </a>
+            </div>
+
+            <div class="mt-40 flex flex-col md:flex-row justify-between w-full text-[9px] uppercase tracking-[0.5em] opacity-30">
+                <div class="mb-4 md:mb-0">2026 MBW • Stockholm</div>
+                <div class="mb-4 md:mb-0">Blockchain + Music + AI Convergence</div>
+                <div class="flex gap-8 justify-center">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // La lógica de detección de glitch via scanner ha sido eliminada para limpiar el fondo.
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            document.body.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, #111 0%, #000 80%)`;
+        });
+    </script>
+</body>
+</html>
