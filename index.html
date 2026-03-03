@@ -10,7 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.03);
+            --brand-orange: #ff6b06;
+            --brand-cyan: #a5f3fc;
+            --glass-bg: rgba(0, 0, 0, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
@@ -26,14 +28,19 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            opacity: 0.08;
+            opacity: 0.05;
             z-index: 50;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        .glitch-text {
-            position: relative;
-            display: inline-block;
+        .nav-blur {
+            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .accent-text {
+            color: var(--brand-orange);
         }
 
         .btn-sign {
@@ -48,19 +55,21 @@
             color: white;
             background: transparent;
             cursor: pointer;
+            text-align: center;
         }
 
         .btn-sign:hover {
-            background: #fff;
+            background: var(--brand-orange);
+            border-color: var(--brand-orange);
             color: #000;
-            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            box-shadow: 0 0 30px rgba(255, 107, 6, 0.3);
         }
 
         .section-tag {
             font-size: 11px;
             letter-spacing: 0.5em;
             text-transform: uppercase;
-            opacity: 0.5;
+            color: var(--brand-orange);
             margin-bottom: 2.5rem;
             display: block;
         }
@@ -75,7 +84,7 @@
         }
 
         .logo-slot {
-            height: 40px;
+            height: 32px;
             display: flex;
             align-items: center;
             font-size: 12px;
@@ -86,124 +95,220 @@
         .logo-slot img {
             height: 100%;
             width: auto;
-            object-fit: contain;
             margin-right: 15px;
         }
 
-        /* Modal Styles */
-        #formModal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 100;
-            backdrop-filter: blur(10px);
+        /* Contenedor de Animación */
+        #network-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, black 90%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Estilos de Tarjetas */
+        .card-hover:hover h4 {
+            color: var(--brand-orange);
+        }
+
+        .partner-logo-container {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
 
-        .modal-content {
-            width: 100%;
-            max-width: 500px;
-            padding: 2.5rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: #050505;
+        .partner-logo {
+            height: 40px;
+            width: auto;
+            filter: grayscale(1) invert(1);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        
+        .partner-logo:hover {
+            filter: grayscale(0) invert(0);
+            opacity: 1;
         }
 
-        input, select, textarea {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 1.5rem;
-            font-size: 11px;
-            text-transform: uppercase;
+        .partner-tag {
+            font-size: 10px;
+            font-weight: 700;
             letter-spacing: 0.1em;
-            outline: none;
+            color: white;
+            opacity: 0.8;
         }
 
-        input:focus, select:focus, textarea:focus {
-            border-color: #fff;
+        /* El contenedor principal - Padding reducido para que sea menos ancho */
+        .banner-container {
+            width: 100%;
+            overflow: hidden;
+            background: #ff6b06; /* El naranja de MBW */
+            padding: 12px 0; /* Padding vertical reducido */
+            white-space: nowrap;
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
-        label {
+        /* La fila que contiene los logos y se desplaza */
+        .banner-scroll {
+            display: flex;
+            align-items: center;
+            gap: 100px; /* Ajustado el espacio entre logos grandes */
+            animation: scroll-infinite 35s linear infinite;
+            min-width: fit-content;
+        }
+
+        /* Estilo para los logos PNG de los sponsors - Tamaño aumentado significativamente */
+        .banner-logo {
+            height: 150px; /* TAMAÑO AUMENTADO (de 60px a 100px) */
+            width: auto;
+            object-fit: contain;
+            /* filter: brightness(0); <-- Descomenta esto para logos negros */
+            transition: transform 0.3s ease;
             display: block;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            margin-bottom: 0.6rem;
-            opacity: 0.5;
+        }
+
+        .banner-logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Animación para el bucle infinito */
+        @keyframes scroll-infinite {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Pausa la animación al pasar el ratón */
+        .banner-container:hover .banner-scroll {
+            animation-play-state: paused;
         }
     </style>
 </head>
-<body class="selection:bg-white selection:text-black">
+<body class="selection:bg-[#ff6b06] selection:text-black">
     <div class="noise-bg"></div>
     
-    <!-- Navegación -->
-    <nav class="fixed top-0 w-full z-40 p-8 flex justify-between items-center mix-blend-difference">
-        <!-- PON TU LOGO AQUÍ -->
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 p-6 px-12 flex justify-between items-center nav-blur">
         <div class="logo-slot">
-            <img src="mbw logo 1.png" alt="Logo MBW" onerror="this.style.display='none';">
-            MUSIC BLOCKCHAIN WEEK
+            <img src="mbw_ite2_img/mbw_logo.png" alt="MBW" onerror="this.style.display='none'" style="display: block !important; width: 40px; height: auto; opacity: 1 !important;">
+            <span class="hidden sm:inline">MUSIC BLOCKCHAIN WEEK</span>
         </div>
 
         <div class="hidden md:flex gap-10 text-[10px] tracking-[0.4em] uppercase">
-            <a href="#kickoff" class="hover:opacity-50 transition-opacity">Kickoff</a>
-            <a href="#experience" class="hover:opacity-50 transition-opacity">Sessions</a>
-            <a href="#hero" class="hover:opacity-50 transition-opacity">Vision</a>
+            <a href="#vision" class="hover:text-[#ff6b06] transition-colors">Vision</a>
+            <a href="#concept" class="hover:text-[#ff6b06] transition-colors">Concept</a>
+            <a href="#kickoff" class="hover:text-[#ff6b06] transition-colors">Events</a>
         </div>
         
-        <button onclick="toggleModal()" class="border border-white/30 px-4 py-2 text-[9px] uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all">
-            Sign_Innovation
-        </button>
+        <a href="https://airtable.com/appSTokY4omDRLMfx/pagOaWyTagLf80ujF/form" target="_blank" rel="noopener noreferrer" class="border border-white/30 px-6 py-2 text-[9px] uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all">
+            Become a Sponsor
+        </a>
     </nav>
 
     <!-- Hero Section -->
-    <section id="hero" class="relative min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden">
-        <div class="z-10 text-center max-w-5xl">
-            <h2 class="text-[10px] tracking-[0.6em] uppercase mb-12 opacity-40">Music Blockchain Week 2026</h2>
+    <section id="hero" class="relative min-h-screen flex flex-col justify-center items-center px-6 pt-20">
+        <div class="z-10 text-center max-w-6xl">
+            <h2 class="text-[10px] tracking-[0.6em] uppercase mb-12 opacity-40">Rewriting the music industry</h2>
             
-            <h1 class="text-6xl md:text-9xl font-light tracking-tighter mb-10 leading-[0.85] uppercase flex flex-col">
-                <span class="glitch-text">AN ENDURING</span>
-                <span class="italic-title glitch-text">DIALOGUE</span>
-                <span class="dim-text glitch-text">MUSIC AND TECH</span>
+            <h1 class="text-6xl md:text-[10rem] font-light tracking-tighter mb-10 leading-[0.85] uppercase flex flex-col">
+                <span>AN ENDURING</span>
+                <span class="italic-title accent-text">DIALOGUE</span>
+                <span class="dim-text">MUSIC AND TECH</span>
             </h1>
 
-            <p class="text-xs md:text-sm max-w-xl mx-auto opacity-50 leading-loose font-light mt-6 tracking-wide">
-                Bridging the gap between the emotive power of music and the structural innovation of Blockchain & AI. 
+            <div class="max-w-2xl mx-auto mt-12">
+                <p class="text-xs md:text-sm opacity-60 leading-loose font-light tracking-wide uppercase">
+              REWRITING THE MUSIC INDUSTRY CODE&nbsp; </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Section with Network Animation -->
+    <section id="vision" class="relative py-60 px-6 overflow-hidden bg-zinc-950/50">
+        <canvas id="network-canvas"></canvas>
+        <div class="vignette"></div>
+        
+        <div class="relative z-10 max-w-4xl mx-auto text-center">
+            <span class="section-tag">What we do and our vision</span>
+            <p class="text-xl md:text-3xl leading-relaxed font-light tracking-tight">
+                MUSIC BLOCKCHAIN WEEK connects Stockholm’s music scene to the builders rewriting its future. <span class="text-white font-medium">Artists, developers, executives, investors, and startups</span>, all in the same room, speaking the same language.
             </p>
         </div>
     </section>
 
-    <!-- Experience Grid -->
-    <section id="experience" class="py-40 px-6">
+    <!-- Event Concept Grid -->
+    <section id="concept" class="py-40 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-white/10">
-                <div class="p-16 h-80 flex flex-col justify-between border-r border-white/10 hover:bg-white/5 transition-all">
-                    <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase">Session_01</span>
-                    <h4 class="text-2xl uppercase tracking-tighter">Live Showcases</h4>
+                <!-- Card 1 -->
+                <div class="p-12 h-[500px] flex flex-col justify-between border-r border-white/10 hover:bg-white/[0.02] transition-all card-hover group">
+                    <div>
+                        <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase block mb-6">Our Event Concept_01</span>
+                        <h4 class="text-3xl uppercase tracking-tighter mb-6 transition-colors">Live Showcases</h4>
+                        <p class="text-sm opacity-40 leading-relaxed font-light">
+                            Events mixing musicians, super fans, developers, founders, and startups, where the music experience should create an enduring conversation.
+                        </p>
+                    </div>
+                    <div class="h-1 w-0 group-hover:w-full bg-[#ff6b06] transition-all duration-500"></div>
                 </div>
-                <div class="p-16 h-80 flex flex-col justify-between border-r border-white/10 hover:bg-white/5 transition-all">
-                    <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase">Session_02</span>
-                    <h4 class="text-2xl uppercase tracking-tighter">hacker house&nbsp;</h4>
+                <!-- Card 2 -->
+                <div class="p-12 h-[500px] flex flex-col justify-between border-r border-white/10 hover:bg-white/[0.02] transition-all card-hover group">
+                    <div>
+                        <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase block mb-6">Our Event Concept_02</span>
+                        <h4 class="text-3xl uppercase tracking-tighter mb-6 transition-colors">Hacker Houses</h4>
+                        <p class="text-sm opacity-40 leading-relaxed font-light">
+                            A month of apps contest development, as a continuation of the live showcases where the needs from the music industry rise. It's a way to not just continue the conversation but execute the ideas.
+                        </p>
+                    </div>
+                    <div class="h-1 w-0 group-hover:w-full bg-[#ff6b06] transition-all duration-500"></div>
                 </div>
-                <div class="p-16 h-80 flex flex-col justify-between hover:bg-white/5 transition-all">
-                    <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase">Session_03</span>
-                    <h4 class="text-2xl uppercase tracking-tighter">Founder Sprints</h4>
+                <!-- Card 3 -->
+                <div class="p-12 h-[500px] flex flex-col justify-between hover:bg-white/[0.02] transition-all card-hover group">
+                    <div>
+                        <span class="text-[9px] tracking-[0.4em] opacity-30 uppercase block mb-6">Our Event Concept_03</span>
+                        <h4 class="text-3xl uppercase tracking-tighter mb-6 transition-colors">Community Kickoff</h4>
+                        <p class="text-sm opacity-40 leading-relaxed font-light">
+                            Events such as Global Pizza Party and other fun events just to unify a wide diverse type of professionals and give them a medium to continue the conversation.
+                        </p>
+                    </div>
+                    <div class="h-1 w-0 group-hover:w-full bg-[#ff6b06] transition-all duration-500"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Community Kickoff Section -->
+    <!-- Next Events -->
     <section id="kickoff" class="py-40 px-6 border-y border-white/5">
         <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-24">
             <div>
-                <span class="section-tag">Next_Event</span>
-                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter uppercase mb-10 leading-none">Community Love<br>Kickoff</h2>
-                <div class="p-10 border-l border-white/20 bg-white/[0.02]">
+                <span class="section-tag">Next_Events</span>
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter uppercase mb-6 leading-none">Community Love<br>Kickoff</h2>
+                
+                <!-- ESPACIO PARA IMAGEN COMMUNITY KICKOFF -->
+                <div class="w-full h-64 bg-zinc-900 border border-white/5 flex items-center justify-center mb-10 overflow-hidden relative group">
+                    <!-- IMAGEN ACTIVADA Y CON RUTA CORREGIDA -->
+                    <img src="mbw_ite2_img/Global Party 2026 Sponsor Deck_converted.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" onerror="this.style.display='none'"> 
+                    <span class="absolute text-[10px] uppercase tracking-[0.5em] opacity-20 pointer-events-none"></span>
+                </div>
+
+                <div class="p-10 border-l border-[#ff6b06] bg-white/[0.02]">
                     <p class="text-xl leading-relaxed mb-8 font-light">
                         Music Blockchain Week is Stockholm's most exciting pre-party leading up to the <strong>2026 Nordic Blockchain Conference</strong>.
                     </p>
@@ -213,142 +318,198 @@
                 </div>
             </div>
             <div class="flex flex-col justify-center">
-                <p class="text-2xl opacity-70 leading-snug mb-12 italic">
-                    "Whether you're deep in blockchain or just love good music and great people, this is your week."
-                </p>
                 <div class="p-10 border border-white/10 mb-12">
                     <h4 class="text-[10px] uppercase tracking-[0.5em] mb-6 opacity-30">May 22nd • Global Pizza Day</h4>
-                    <p class="text-sm opacity-50 leading-relaxed font-light">
-                        Teaming up with <strong>PizzaDAO</strong> to share 40K pizzas and throw 400 parties globally. Stockholm is one of the main spots. History, community, and fun.
+                    <p class="text-sm opacity-50 leading-relaxed font-light mb-8">
+                        Teaming up with <strong>PizzaDAO</strong> to share 40K pizzas and throw 400 parties globally. Stockholm is one of the main spots.
+                    </p>
+                    
+                    <!-- PARTNERS SECTION -->
+                    <div class="mt-10 pt-10 border-t border-white/5">
+                        <span class="text-[9px] uppercase tracking-[0.2em] opacity-30 block mb-6">Partners:</span>
+                        <div class="partner-logo-container">
+                            <!-- PizzaDAO -->
+                            <div class="flex items-center gap-2">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Pizza_Hut_New_Logo.svg/1200px-Pizza_Hut_New_Logo.svg.png" alt="PizzaDAO" class="partner-logo" onerror="this.style.opacity='0.2'">
+                                <span class="partner-tag">PIZZADAO</span>
+                            </div>
+                            <!-- Nordic Blockchain Association -->
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center partner-logo">N</div>
+                                <span class="partner-tag">NORDIC BLOCKCHAIN ASSOCIATION</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://drive.google.com/drive/folders/1vLX7y01fghsamHJj4Lt-bTH4_CgkcCg2?usp=sharing" target="_blank" class="text-[10px] uppercase tracking-[0.3em] text-[#ff6b06] hover:underline mt-8 block">
+                        Download Event PDF →
+                    </a>
+                </div>
+                <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+                    <a href="https://airtable.com/appSTokY4omDRLMfx/pagOaWyTagLf80ujF/form" target="_blank" rel="noopener noreferrer" class="btn-sign">Become a Sponsor</a>
+                    <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.4em; opacity: 0.3; text-align: center; margin-top: 24px; color: white;">
+                        Secure your spot in the future of music
                     </p>
                 </div>
-                <button onclick="toggleModal()" class="btn-sign text-center">Join the list</button>
             </div>
         </div>
     </section>
 
-    <!-- Footer / CTA Final -->
-    <footer class="py-40 px-6 text-center relative overflow-hidden">
+    <!-- Brand Banner Section -->
+    <div class="banner-container">
+        <div class="banner-scroll">
+            <!-- BLOQUE 1: Colección de Logos Grandes -->
+            <img src="mbw_ite2_img/mbw_logo.png" class="banner-logo" alt="MBW Logo" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-1.png" class="banner-logo" alt="Sponsor 1" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-2.png" class="banner-logo" alt="Sponsor 2" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-3.png" class="banner-logo" alt="Sponsor 3" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-4.png" class="banner-logo" alt="Sponsor 4" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-5.png" class="banner-logo" alt="Sponsor 5" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-10.png" class="banner-logo" alt="Sponsor 10" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-11.png" class="banner-logo" alt="Sponsor 11" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-12.png" class="banner-logo" alt="Sponsor 12" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-13.png" class="banner-logo" alt="Sponsor 13" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-14.png" class="banner-logo" alt="Sponsor 14" onerror="this.style.display='none'">
+
+            <!-- BLOQUE 2: Duplicado idéntico para el loop infinito -->
+            <img src="mbw_ite2_img/mbw_logo.png" class="banner-logo" alt="MBW Logo" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-1.png" class="banner-logo" alt="Sponsor 1" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-2.png" class="banner-logo" alt="Sponsor 2" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-3.png" class="banner-logo" alt="Sponsor 3" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-4.png" class="banner-logo" alt="Sponsor 4" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-5.png" class="banner-logo" alt="Sponsor 5" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-10.png" class="banner-logo" alt="Sponsor 10" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-11.png" class="banner-logo" alt="Sponsor 11" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-12.png" class="banner-logo" alt="Sponsor 12" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-13.png" class="banner-logo" alt="Sponsor 13" onerror="this.style.display='none'">
+            <img src="mbw_ite2_img/Logo Sponsors-14.png" class="banner-logo" alt="Sponsor 14" onerror="this.style.display='none'">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-40 px-6 text-center">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-5xl md:text-8xl font-light tracking-tighter uppercase mb-20 leading-none">Ready to merge<br>industries?</h2>
             
             <div class="flex justify-center">
-                <button onclick="toggleModal()" class="btn-sign">
-                    Sign_Innovation
-                </button>
+                <a href="https://airtable.com/appSTokY4omDRLMfx/pagOaWyTagLf80ujF/form" target="_blank" rel="noopener noreferrer" class="btn-sign">Become a Sponsor</a>
             </div>
 
             <div class="mt-40 flex flex-col md:flex-row justify-between w-full text-[9px] uppercase tracking-[0.5em] opacity-30">
-                <div class="mb-4 md:mb-0">2026 MBW • Stockholm</div>
-                <div class="mb-4 md:mb-0">Blockchain + Music + AI Convergence</div>
-                <div class="flex gap-8 justify-center">
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
+                <div>2026 MBW • Stockholm</div>
+                <div class="flex gap-8 justify-center mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- FORMULARIO MODAL INTEGRADO -->
-    <div id="formModal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="text-[10px] tracking-[0.5em] uppercase opacity-50">Innovation_Delegate_Form</h3>
-                <button onclick="toggleModal()" class="text-2xl opacity-50 hover:opacity-100">&times;</button>
-            </div>
-            
-            <form id="delegateForm" onsubmit="handleForm(event)">
-                <label>Full Name</label>
-                <input type="text" id="name" placeholder="Name" required>
-
-                <label>Industry Segment</label>
-                <select id="industry" required>
-                    <option value="" disabled selected>Select Segment</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Music">Music Industry</option>
-                    <option value="Startup">Startup / Founder</option>
-                </select>
-
-                <label>Join the guest list</label>
-                <input type="email" id="email" placeholder="email@address.com" required>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label>X (Twitter) Profile</label>
-                        <input type="text" id="x_profile" placeholder="@handle">
-                    </div>
-                    <div>
-                        <label>IG Profile</label>
-                        <input type="text" id="ig_profile" placeholder="@handle">
-                    </div>
-                </div>
-
-                <label>What do you want to change to better in this world?</label>
-                <textarea id="question" rows="3" placeholder="My mission is..."></textarea>
-
-                <button type="submit" class="w-full bg-white text-black py-4 text-[11px] tracking-[0.5em] uppercase font-bold hover:bg-zinc-200 transition-colors">
-                    Submit_Application
-                </button>
-            </form>
-        </div>
-    </div>
-
     <script>
-        // Función para abrir/cerrar modal
-        function toggleModal() {
-            const modal = document.getElementById('formModal');
-            const isHidden = modal.style.display === 'none' || modal.style.display === '';
-            modal.style.display = isHidden ? 'flex' : 'none';
-            document.body.style.overflow = isHidden ? 'hidden' : 'auto';
+        // Animación Mejorada con Cubos y Partículas Glow
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        const pointCount = 50;
+        const maxDist = 200;
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            points = [];
+            for (let i = 0; i < pointCount; i++) {
+                points.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.6,
+                    vy: (Math.random() - 0.5) * 0.6,
+                    color: Math.random() > 0.5 ? '#ff6b06' : '#a5f3fc',
+                    size: Math.random() * 6 + 2, // Diferentes tamaños
+                    glow: 0,
+                    glowTarget: 0,
+                    timer: Math.random() * 100
+                });
+            }
         }
 
-        // Cerrar modal al hacer clic fuera
-        window.onclick = function(event) {
-            const modal = document.getElementById('formModal');
-            if (event.target == modal) toggleModal();
-        }
-
-        // Manejo del formulario y envío de email
-        function handleForm(e) {
-            e.preventDefault();
+        function drawCube(x, y, size, color, glow) {
+            ctx.save();
+            ctx.translate(x, y);
             
-            const data = {
-                name: document.getElementById('name').value,
-                industry: document.getElementById('industry').value,
-                email: document.getElementById('email').value,
-                x: document.getElementById('x_profile').value || 'Not provided',
-                ig: document.getElementById('ig_profile').value || 'Not provided',
-                question: document.getElementById('question').value
-            };
+            // Efecto Glow dinámico
+            if (glow > 0.1) {
+                ctx.shadowBlur = 15 * glow;
+                ctx.shadowColor = color;
+            }
 
-            const subject = `MBW 2026 Access Request: ${data.name}`;
-            const body = `
-NEW DELEGATE APPLICATION
--------------------------
-Name: ${data.name}
-Industry Segment: ${data.industry}
-Email: ${data.email}
-X Profile: ${data.x}
-IG Profile: ${data.ig}
-
-Vision for Change:
-${data.question}
-            `.trim();
-
-            // Redirección al cliente de correo
-            window.location.href = `mailto:connect@musicblockchainweek.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            ctx.fillStyle = color;
+            ctx.globalAlpha = 0.2 + (0.6 * glow);
             
-            setTimeout(() => {
-                toggleModal();
-                alert("Redirigiendo a tu aplicación de correo para enviar la información...");
-            }, 500);
+            // Dibujar un cubo (rectángulo estilizado)
+            ctx.fillRect(-size/2, -size/2, size, size);
+            
+            // Borde del cubo
+            ctx.strokeStyle = color;
+            ctx.globalAlpha = 0.4 + (0.5 * glow);
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-size/2, -size/2, size, size);
+            
+            ctx.restore();
         }
 
-        // Efecto de fondo radial
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            points.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                // Lógica de "encendido" (glow)
+                p.timer--;
+                if(p.timer <= 0) {
+                    p.glowTarget = p.glowTarget === 0 ? 1 : 0;
+                    p.timer = Math.random() * 200 + 50;
+                }
+                
+                // Suavizar transición de brillo
+                p.glow += (p.glowTarget - p.glow) * 0.05;
+
+                drawCube(p.x, p.y, p.size, p.color, p.glow);
+
+                for (let j = i + 1; j < points.length; j++) {
+                    const p2 = points[j];
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    if (dist < maxDist) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = p.color;
+                        // La línea brilla si alguno de los puntos brilla
+                        const lineGlow = Math.max(p.glow, p2.glow);
+                        ctx.globalAlpha = (1 - dist / maxDist) * (0.1 + (0.3 * lineGlow));
+                        ctx.lineWidth = 0.5 + lineGlow;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
+
+        // Interacción de fondo
         document.addEventListener('mousemove', (e) => {
             const x = e.clientX / window.innerWidth;
             const y = e.clientY / window.innerHeight;
-            document.body.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, #111 0%, #000 80%)`;
+            document.body.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, #0a0a0a 0%, #000 80%)`;
         });
     </script>
 </body>
